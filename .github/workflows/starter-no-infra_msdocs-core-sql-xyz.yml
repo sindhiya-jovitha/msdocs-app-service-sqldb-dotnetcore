@@ -24,7 +24,7 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet publish "DotNetCoreSqlDb/DotNetCoreSqlDb.csproj" --configuration Release --output ${{env.DOTNET_ROOT}}/myapp
 
       - name: Install dotnet-ef
         run: dotnet tool install --global dotnet-ef
@@ -70,4 +70,5 @@ jobs:
           app-name: 'msdocs-core-sql-XYZ'
           slot-name: 'Production'
           package: .
+
           
