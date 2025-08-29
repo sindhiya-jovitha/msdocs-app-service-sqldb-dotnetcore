@@ -69,7 +69,7 @@ jobs:
         with:
           app-name: 'msdocs-core-sql-XYZ'
           slot-name: 'Production'
-          package: .
+          package: .net-app
 
           
 
