@@ -25,7 +25,7 @@ jobs:
         with:
           dotnet-version: '8.x'
 
-      - name: Build with dotnet
+      - name: dotnet publish
         run: dotnet publish "DotNetCoreSqlDb.csproj" --configuration Release --output ${{env.DOTNET_ROOT}}/myapp
 
       - name: Install dotnet-ef
