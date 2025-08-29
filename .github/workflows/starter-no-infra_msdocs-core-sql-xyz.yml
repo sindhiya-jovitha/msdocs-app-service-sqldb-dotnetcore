@@ -31,8 +31,13 @@ jobs:
       - name: Install dotnet-ef
         run: dotnet tool install --global dotnet-ef
 
-      - name: dotnet publish
-        run: 'dotnet publish "DotNetCoreSqlDb.csproj" --output ${{ env.DOTNET_ROOT }}/myapp'
+      - name: Install dotnet-ef
+        run: dotnet tool install --global dotnet-ef
+
+      - name: Create EF Core migrations bundle
+        run: dotnet ef migrations bundle --output ${{ env.DOTNET_ROOT }}/myapp/migrations.bundle
+        env:
+          PATH: $PATH:~/.dotnet/tools
 
       - name: Create EF Core migrations bundle
         run: 'dotnet ef migrations bundle --output ${{env. DOTNET_ROOT}}/myapp/migrations.bundle'
