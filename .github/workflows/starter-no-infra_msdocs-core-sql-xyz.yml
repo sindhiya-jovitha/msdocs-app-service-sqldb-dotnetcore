@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
     env:
       DOTNET_ROOT: ${{ github.workspace }}/.dotnet
 
@@ -31,18 +31,11 @@ jobs:
       - name: Install dotnet-ef
         run: dotnet tool install --global dotnet-ef
 
-      - name: Install dotnet-ef
-        run: dotnet tool install --global dotnet-ef
-
       - name: Create EF Core migrations bundle
+        # This env block adds the dotnet tools folder to the PATH so the 'dotnet ef' command can be found.
+        env:
+          PATH: ${{ env.PATH }}:~/.dotnet/tools
         run: dotnet ef migrations bundle --output ${{ env.DOTNET_ROOT }}/myapp/migrations.bundle
-        env:
-          PATH: $PATH:~/.dotnet/tools
-
-      - name: Create EF Core migrations bundle
-        run: 'dotnet ef migrations bundle --output ${{env. DOTNET_ROOT}}/myapp/migrations.bundle'
-        env:
-          PATH: $PATH:~/.dotnet/tools
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
