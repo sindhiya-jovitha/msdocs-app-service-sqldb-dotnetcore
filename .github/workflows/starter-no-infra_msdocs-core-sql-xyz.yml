@@ -29,13 +29,10 @@ jobs:
         run: dotnet publish "DotNetCoreSqlDb.csproj" --configuration Release --output ${{env.DOTNET_ROOT}}/myapp
 
       - name: Install dotnet-ef
-        run: dotnet tool install --global dotnet-ef
+        run: dotnet tool install --global dotnet-ef --version 8.*
 
-      - name: Create EF Core migrations bundle
-        # This env block adds the dotnet tools folder to the PATH so the 'dotnet ef' command can be found.
-        env:
-          PATH: ${{ env.PATH }}:~/.dotnet/tools
-        run: dotnet ef migrations bundle --output ${{ env.DOTNET_ROOT }}/myapp/migrations.bundle
+      - name: Create migrations bundle
+        run: dotnet ef migrations bundle --runtime linux-x64 --project "DotNetCoreSqlDb.csproj" -o ${{env.DOTNET_ROOT}}/myapp/migrationsbundle
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -69,7 +66,4 @@ jobs:
         with:
           app-name: 'msdocs-core-sql-XYZ'
           slot-name: 'Production'
-          package: .net-app
-
-          
-
+          package: .
