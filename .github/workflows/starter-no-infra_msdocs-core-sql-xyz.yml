@@ -13,9 +13,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-    env:
-      DOTNET_ROOT: ${{ github.workspace }}/.dotnet
+      contents: read #This is required for actions/checkout
 
     steps:
       - uses: actions/checkout@v4
@@ -25,17 +23,11 @@ jobs:
         with:
           dotnet-version: '8.x'
 
+      - name: Build with dotnet
+        run: dotnet build --configuration Release
+
       - name: dotnet publish
-        run: dotnet publish "DotNetCoreSqlDb.csproj" --configuration Release --output ${{env.DOTNET_ROOT}}/myapp
-
-      - name: Install dotnet-ef
-        run: dotnet tool install --global dotnet-ef
-
-      - name: Create EF Core migrations bundle
-        # This env block adds the dotnet tools folder to the PATH so the 'dotnet ef' command can be found.
-        env:
-          PATH: ${{ env.PATH }}:~/.dotnet/tools
-        run: dotnet ef migrations bundle --output ${{ env.DOTNET_ROOT }}/myapp/migrations.bundle
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -59,9 +51,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_0A7B0FF2C9DD45DE859F235DA9F61C8C }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_C5D9856388F24EE8A6E90DA62A3D854D }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F54AD08B30874FA2AC1BD862D440D44D }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_6B3003EA18654DBFAC6DDC15B935B9E4 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_6772E927F09F444C97FDCD57BC0DDFAE }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F8848292558B4865A9DC06C605A9B6A5 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -69,7 +61,5 @@ jobs:
         with:
           app-name: 'msdocs-core-sql-XYZ'
           slot-name: 'Production'
-          package: .net-app
-
+          package: .
           
-
