@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read #This is required for actions/checkout
+    env:
+      DOTNET_ROOT: ${{ github.workspace }}/.dotnet
 
     steps:
       - uses: actions/checkout@v4
@@ -23,9 +25,6 @@ jobs:
         with:
           dotnet-version: '8.x'
 
-      - name: Build with dotnet
-        run: dotnet build --configuration Release
-
       - name: dotnet publish
         run: dotnet publish "DotNetCoreSqlDb.csproj" --configuration Release --output ${{env.DOTNET_ROOT}}/myapp
 
@@ -34,9 +33,6 @@ jobs:
 
       - name: Create migrations bundle
         run: dotnet ef migrations bundle --runtime linux-x64 --project "DotNetCoreSqlDb.csproj" -o ${{env.DOTNET_ROOT}}/myapp/migrationsbundle
-
-      - name: Create EF Core migrations bundle
-        run: dotnet ef migrations bundle --output ${{ env.DOTNET_ROOT }}/myapp/migrations.bundle
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -70,7 +66,4 @@ jobs:
         with:
           app-name: 'msdocs-core-sql-XYZ'
           slot-name: 'Production'
-          package: .net-app
-
-          
-
+          package: .
